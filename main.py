@@ -4,6 +4,7 @@ from PyQt5.QtGui import QColor, QBrush
 import main_win
 import mb110_224
 import time
+import data_graph_main
 import configparser
 import os
 
@@ -28,6 +29,10 @@ class MainWindow(QtWidgets.QMainWindow, main_win.Ui_Cauldron):
 
         self.startCyclePButt.clicked.connect(self.cycle_start)
         self.stopCyclePButt.clicked.connect(self.cycle_stop)
+        # создание второго окна с графиками
+        self.GraphWindow = data_graph_main.MainWindow()
+        self.restartGraphPButt.clicked.connect(self.reset_graph_data)
+        self.graphPButt.clicked.connect(self.graph_window_open)
 
     def cycle_start(self):
         self.cycle_timer.start(1)
@@ -41,7 +46,17 @@ class MainWindow(QtWidgets.QMainWindow, main_win.Ui_Cauldron):
         self.cycle_timer.setInterval(self.periodSBox.value() * 1000)
         # опрос девайсов
         self.mb110_widget.dev.read_temp()
+        self.mb110_widget.dev.form_graph_data()
         self.log_file.write(self.mb110_widget.dev.log_data().replace(".", ",") + "\n")
+        # отрисовка
+        self.GraphWindow.plot(data=self.mb110_widget.dev.graph_data)
+        pass
+
+    def graph_window_open(self):
+        self.GraphWindow.show()
+
+    def reset_graph_data(self):
+        self.mb110_widget.dev.reset_graph_data()
         pass
 
     # LOGs #

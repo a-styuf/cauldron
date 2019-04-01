@@ -46,6 +46,8 @@ class MB110_224:
                           "Канал 8, °С"]
         self.data = [0 for i in range(len(self.data_name))]
         self.data[0] = time.clock()
+        self.graph_data = []
+        self.reset_graph_data()
         # поток для чтения
         self.read_thread = threading.Thread(target=self._read_temp)
         self.data_lock = threading.Lock()
@@ -54,31 +56,32 @@ class MB110_224:
         com_list = serial.tools.list_ports.comports()
         for com in com_list:
             for serial_number in self.dev_id:
-                print(com.serial_number, serial_number)
+                # print(com.serial_number, serial_number)
                 if com.serial_number is not None:
                     if serial_number in com.serial_number:
-                        if self.instrument is None:
-                            minimalmodbus.BAUDRATE = self.br
-                            minimalmodbus.CLOSE_PORT_AFTER_EACH_CALL = False
-                            minimalmodbus.TIMEOUT = self.timeout
-                            self.dev_port = com.device
-                            try:
-                                self.instrument = minimalmodbus.Instrument(com.device, self.mb_addr, mode="rtu")
-                                self.instrument.debug = False
-                                return 1
-                            except serial.serialutil.SerialException as error:
-                                print(error)
+                        minimalmodbus.BAUDRATE = self.br
+                        minimalmodbus.CLOSE_PORT_AFTER_EACH_CALL = True
+                        minimalmodbus.TIMEOUT = self.timeout
+                        self.dev_port = com.device
+                        try:
+                            self.instrument = minimalmodbus.Instrument(com.device, self.mb_addr, mode="rtu")
+                            self.instrument.debug = False
+                            return 1
+                        except serial.serialutil.SerialException as error:
+                            # print(error)
+                            pass
         return -1
 
     def _read_temp(self):  # функция для запуска в потоке и чтения температуры
-        if self.instrument:
+        tmp_data = []
+        try:
             tmp_data = self.instrument.read_registers(0, 4 * 6)
             time.sleep(0.01)
             tmp_data.extend(self.instrument.read_registers(4 * 6, 4 * 6))
-            self.parc_mb_data(tmp_data)
-        else:
+            self.state = 1
+        except (serial.serialutil.SerialException, OSError, AttributeError) as error:
             self.state = -1
-        pass
+        self.parc_mb_data(tmp_data)
 
     def parc_mb_data(self, mb_data):
         temp_list = []
@@ -101,6 +104,22 @@ class MB110_224:
             self.read_thread = threading.Thread(target=self._read_temp)
             self.read_thread.start()
 
+    def form_graph_data(self, num=24*3600):
+        try:
+            for i in range(len(self.data_name)):
+                self.graph_data[i][1].append(self.data[i])
+                if len(self.graph_data[i][1]) > num:
+                    self.graph_data[i][1] = self.graph_data[i][1][-num:]
+        except Exception as error:
+            # print(error)
+            pass
+
+    def reset_graph_data(self):
+        self.graph_data = []
+        for i in range(len(self.data_name)):
+            single_graph = [self.data_name[i], []]
+            self.graph_data.append(single_graph)
+
     def reconnect(self, **kw):
         for key in sorted(kw):
             if key == "id":
@@ -113,7 +132,7 @@ class MB110_224:
                 self.timeout = kw.pop(key)
             else:
                 pass
-        self._connect_serial_by_ser_num()
+        self.state = self._connect_serial_by_ser_num()
         pass
 
     def __str__(self):
@@ -171,6 +190,11 @@ class MB110_Widget(QtWidgets.QFrame, mb110_224_win.Ui_Form):
             table_item = QtWidgets.QTableWidgetItem("%.1f" % float(self.dev.data[row]))
             self.tempTWidget.setItem(row, 1, table_item)
         pass
+        #
+        if self.dev.state == -1:
+            self.devNameLabel.setStyleSheet("background-color: " + "lightcoral")
+        elif self.dev.state == 1:
+            self.devNameLabel.setStyleSheet("background-color: " + "palegreen")
 
 
 if __name__ == "__main__":
