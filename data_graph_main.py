@@ -3,8 +3,11 @@ import sys
 from PyQt5.QtWidgets import QApplication, QVBoxLayout, QMainWindow, QTableWidgetItem
 import data_graph
 
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+import matplotlib
+matplotlib.use("Qt5Agg")  # or whichever backend you wish to use
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+
 import matplotlib.pyplot as plt
 
 
@@ -16,8 +19,8 @@ class MainWindow(QMainWindow, data_graph.Ui_GraphWindow):
         self.setupUi(self)  # Это нужно для инициализации нашего дизайна
         self.type = "slave"  # необходимо для проерки на вид вызова окна - главное/дочернее
         self.figure = plt.figure()
-        self.canvas = FigureCanvas(self.figure)
-        self.toolbar = NavigationToolbar(self.canvas, self)
+        self.canvas = FigureCanvasQTAgg(self.figure)
+        self.toolbar = NavigationToolbar2QT(self.canvas, self)
         # data
         self.data = None
         self.pause = 0

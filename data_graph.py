@@ -2,30 +2,21 @@
 
 # Form implementation generated from reading ui file 'data_graph.ui'
 #
-# Created by: PyQt5 UI code generator 5.11.3
+# Created by: PyQt5 UI code generator 5.12.1
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_GraphWindow(object):
     def setupUi(self, GraphWindow):
         GraphWindow.setObjectName("GraphWindow")
-        GraphWindow.resize(727, 417)
+        GraphWindow.resize(785, 417)
         self.centralwidget = QtWidgets.QWidget(GraphWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
-        self.pauseButton = QtWidgets.QPushButton(self.centralwidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.pauseButton.sizePolicy().hasHeightForWidth())
-        self.pauseButton.setSizePolicy(sizePolicy)
-        self.pauseButton.setMinimumSize(QtCore.QSize(120, 25))
-        self.pauseButton.setCheckable(True)
-        self.pauseButton.setObjectName("pauseButton")
-        self.gridLayout.addWidget(self.pauseButton, 0, 2, 1, 1)
         self.tableWidget = QtWidgets.QTableWidget(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -73,19 +64,19 @@ class Ui_GraphWindow(object):
         self.pointNumSBox.setProperty("value", 3600)
         self.pointNumSBox.setObjectName("pointNumSBox")
         self.gridLayout.addWidget(self.pointNumSBox, 1, 2, 1, 1)
-        self.restartButton = QtWidgets.QPushButton(self.centralwidget)
-        self.restartButton.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.restartButton.sizePolicy().hasHeightForWidth())
-        self.restartButton.setSizePolicy(sizePolicy)
-        self.restartButton.setMinimumSize(QtCore.QSize(120, 25))
-        self.restartButton.setObjectName("restartButton")
-        self.gridLayout.addWidget(self.restartButton, 0, 1, 1, 1)
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setObjectName("label")
         self.gridLayout.addWidget(self.label, 1, 1, 1, 1)
+        self.pauseButton = QtWidgets.QPushButton(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.pauseButton.sizePolicy().hasHeightForWidth())
+        self.pauseButton.setSizePolicy(sizePolicy)
+        self.pauseButton.setMinimumSize(QtCore.QSize(120, 25))
+        self.pauseButton.setCheckable(True)
+        self.pauseButton.setObjectName("pauseButton")
+        self.gridLayout.addWidget(self.pauseButton, 0, 1, 1, 2)
         GraphWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(GraphWindow)
@@ -94,7 +85,6 @@ class Ui_GraphWindow(object):
     def retranslateUi(self, GraphWindow):
         _translate = QtCore.QCoreApplication.translate
         GraphWindow.setWindowTitle(_translate("GraphWindow", "MainWindow"))
-        self.pauseButton.setText(_translate("GraphWindow", "Пауза"))
         item = self.tableWidget.verticalHeaderItem(0)
         item.setText(_translate("GraphWindow", "1"))
         item = self.tableWidget.verticalHeaderItem(1)
@@ -105,6 +95,7 @@ class Ui_GraphWindow(object):
         item.setText(_translate("GraphWindow", "1"))
         item = self.tableWidget.horizontalHeaderItem(1)
         item.setText(_translate("GraphWindow", "2"))
-        self.restartButton.setText(_translate("GraphWindow", "Перезапустить"))
         self.label.setText(_translate("GraphWindow", "Кол-во точек, шт"))
+        self.pauseButton.setText(_translate("GraphWindow", "Пауза"))
+
 
